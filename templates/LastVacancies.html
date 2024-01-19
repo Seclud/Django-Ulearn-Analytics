@@ -7,7 +7,7 @@
         <li>
             <h2>{{ vacancy.name }}</h2>
             <p>{{ vacancy.description }}</p>
-            <p>Навыки: {{ vacancy.skills }}</p>
+            <p>Навыки: {{ vacancy.snippet.requirement }}</p>
             <p>Компания: {{ vacancy.employer.name }}</p>
             <p>Оклад: {{ vacancy.salary.from }} - {{ vacancy.salary.to }}</p>
             <p>Регион: {{ vacancy.area.name }}</p>
