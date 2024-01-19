@@ -240,3 +240,8 @@ cython_debug/
 #.idea/
 
 /analytics/vacancies.csv
+/analytics/salary_by_city.png
+/analytics/salary_by_year.png
+/analytics/skills_by_year.png
+/analytics/vacancies_by_city.png
+/analytics/vacancies_by_year.png
