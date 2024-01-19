@@ -7,3 +7,6 @@ def home(request):
 def todos(request):
     items = TodoItem.objects.all()
     return render(request, 'todos.html', {'todos':items})
+
+def skills(request):
+    return render(request, 'skills.html')

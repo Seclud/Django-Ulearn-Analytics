@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import requests
 
 vacancies = pd.read_csv('vacancies.csv')
 
@@ -25,17 +26,16 @@ vacancies_by_year_filtered = vacancies_by_year_filtered.reindex(salary_by_year.i
 
 # География
 salary_by_city = vacancies.groupby('area_name')['salary'].mean()
-vacancies_by_city = vacancies.groupby('area_name').size()
+vacancies_by_city = vacancies.groupby('area_name').size().to_frame('vacancy')
+vacancies_by_city['vacancy'] = round(vacancies_by_city['vacancy'] / vacancies.shape[0] * 100, 2)
 
 salary_by_city_filtered = vacancies_filtered.groupby('area_name')['salary'].mean()
-vacancies_by_city_filtered = vacancies_filtered.groupby('area_name').size()
+vacancies_by_city_filtered = vacancies_filtered.groupby('area_name').size().to_frame('vacancy')
+vacancies_by_city_filtered['vacancy'] = round(vacancies_by_city_filtered['vacancy'] / vacancies_filtered.shape[0] * 100, 2)
 
 # Навыки
-# print(vacancies.explode('key_skills'))
-# print(vacancies.explode('key_skills').groupby('year')['key_skills'].value_counts())
-# print(vacancies.explode('key_skills').groupby('year')['key_skills'].value_counts().nlargest(20))
-skills_by_year = vacancies.explode('key_skills').groupby('year')['key_skills'].value_counts().groupby('year').nlargest(20)
-#skills_by_year = vacancies.explode('key_skills').groupby('year')['key_skills'].value_counts().reset_index().sort_values(by=[year,],ascending=False)
+skills_by_year = vacancies.explode('key_skills').groupby('year')['key_skills'].value_counts().groupby('year').nlargest(
+    20)
 skills_by_year_filtered = vacancies_filtered.explode('key_skills').groupby('year')['key_skills'].value_counts().groupby(
     'year').nlargest(20)
 
@@ -52,7 +52,7 @@ ax.set_title('Уровень зарплаты по годам')
 ax.set_xticks(x, salary_by_year.index.tolist())
 ax.set_xticklabels(salary_by_year.index.tolist(), rotation='vertical', va='top')
 ax.legend(loc='upper right')
-plt.savefig('salary_by_year.png')
+plt.savefig('C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/salary_by_year.png')
 plt.show()
 
 fig, ax = plt.subplots(layout="constrained")
@@ -64,34 +64,54 @@ ax.set_xticks(x, vacancies_by_year.index.tolist())
 ax.set_xticklabels(vacancies_by_year.index.tolist(), rotation='vertical', va='top')
 ax.legend(loc='upper right')
 ax.set_yscale('log')
-plt.savefig('vacancies_by_year.png')
+plt.savefig('C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/vacancies_by_year.png')
 plt.show()
 
 # География
-x = np.arange(len(salary_by_city[:10]))
+salary_by_city_sorted = salary_by_city.sort_values(ascending=False).head(10)
+salary_by_city_filtered_sorted = salary_by_city_filtered.sort_values(ascending=False).head(10)
+as_list = salary_by_city_sorted.index.tolist()
+as_list = [label.replace(' ', '\n') for label in as_list]
+x = np.arange(len(as_list))
 fig, ax = plt.subplots(layout="constrained")
-ax.bar(x + width / 2, salary_by_city[:10], width=width, label="Все вакансии")
-ax.bar(x - width / 2, salary_by_city_filtered[:10], width=width, label="Вакансии разработчика игр")
+ax.set_title('Уровень зарплат по городам')
+ax.barh(x + width / 2, salary_by_city_sorted, width, label="Все вакансии")
+ax.barh(x - width / 2, salary_by_city_filtered_sorted, width, label="Вакансии разработчика игр")
+ax.set_yticklabels(as_list, fontsize=6, va='center', ha='right')
 ax.legend(loc='upper right')
-plt.savefig('salary_by_city.png')
+plt.savefig('C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/salary_by_city.png')
 plt.show()
 
 fig, ax = plt.subplots(layout="constrained")
-ax.bar(x + width / 2, vacancies_by_city[:10], width=width, label="Все вакансии")
-ax.bar(x - width / 2, vacancies_by_city_filtered[:10], width=width, label="Вакансии разработчика игр")
-ax.legend(loc='upper right')
-plt.savefig('vacancies_by_city.png')
+top_10_city_ratio = vacancies_by_city.sort_values('vacancy', ascending=False).head(10)
+other = 100 - top_10_city_ratio['vacancy'].sum()
+new_dic = {'Другие': other}
+new_dic.update(top_10_city_ratio['vacancy'].to_dict())
+area_count_dic = new_dic
+labels = list(area_count_dic.keys())
+sizes = list(area_count_dic.values())
+ax.pie(sizes, labels=labels, textprops={'fontsize': 6})
+ax.set_title('Доля вакансий по городам')
+ax.axis('scaled')
+plt.savefig('C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/vacancies_by_city.png')
+plt.show()
+
+fig, ax = plt.subplots(layout="constrained")
+top_10_city_ratio_filtered = vacancies_by_city_filtered.sort_values('vacancy', ascending=False).head(10)
+other = 100 - top_10_city_ratio_filtered['vacancy'].sum()
+new_dic = {'Другие': other}
+new_dic.update(top_10_city_ratio_filtered['vacancy'].to_dict())
+area_count_dic = new_dic
+labels = list(area_count_dic.keys())
+sizes = list(area_count_dic.values())
+ax.pie(sizes, labels=labels, textprops={'fontsize': 6})
+ax.set_title('Доля вакансий по городам для выбранной профессии')
+ax.axis('scaled')
+plt.savefig(
+    'C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/vacancies_by_city_filtered.png')
 plt.show()
 
 # Навыки
-# x = np.arange(len(skills_by_year))
-# fig, ax = plt.subplots(layout="constrained")
-# ax.bar(x + width / 2, skills_by_year, width=width, label="Все вакансии")
-# ax.bar(x - width / 2, skills_by_year_filtered, width=width, label="Вакансии разработчика игр")
-# ax.legend(loc='upper right')
-# plt.savefig('skills_by_year.png')
-# plt.show()
-# Get unique years
 years = skills_by_year.index.get_level_values(0).unique()
 
 # Ширина столба
@@ -120,14 +140,14 @@ for year in years:
     ax.set_xticklabels(labels, rotation='vertical')
     ax.legend()
 
-    plt.savefig(f'skills_by_year_{year}.png')
+    plt.savefig(
+        f'C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/skills_by_year_{year}.png')
     plt.show()
 
 # Цикл через года для отфильтрованных профессий
 for year in years:
     # Данные за этот год
     skills_this_year_filtered = skills_by_year_filtered.loc[year]
-
 
     # Обрезать ярылки до 20 знаков
     labels = [label[:20] + '...' if len(label) > 20 else label for label in
@@ -147,7 +167,6 @@ for year in years:
     ax.set_xticklabels(labels, rotation='vertical')
     ax.legend()
 
-    plt.savefig(f'skills_by_year_filtered_{year}.png')
+    plt.savefig(
+        f'C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/skills_by_year_filtered_{year}.png')
     plt.show()
-
-skills_by_year.style
