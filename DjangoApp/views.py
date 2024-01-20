@@ -10,6 +10,12 @@ def todos(request):
     items = TodoItem.objects.all()
     return render(request, 'todos.html', {'todos':items})
 
+def demand(request):
+    return render(request, 'demand.html')
+
+def geography(request):
+    return render(request, 'geography.html')
+
 def skills(request):
     return render(request, 'skills.html')
 
@@ -30,3 +36,4 @@ def last_vacancies(request):
     vacancies = response.json()['items']
 
     return render(request, 'LastVacancies.html', {'vacancies': vacancies})
+
