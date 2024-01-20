@@ -40,20 +40,26 @@ salary_by_year_filtered = salary_by_year_filtered.reindex(salary_by_year.index, 
 vacancies_by_year_filtered = vacancies_filtered.groupby('year').size()
 vacancies_by_year_filtered = vacancies_by_year_filtered.reindex(salary_by_year.index, fill_value=0)
 
+
 # География
-salary_by_city = vacancies.groupby('area_name')['salary'].mean()
+city_percentage = vacancies['area_name'].value_counts(normalize=True)
+cities_to_include = city_percentage[city_percentage >= 0.01].index
+salary_by_city = vacancies[vacancies['area_name'].isin(cities_to_include)].groupby('area_name')['salary'].mean()
 vacancies_by_city = vacancies.groupby('area_name').size().to_frame('vacancy')
 vacancies_by_city['vacancy'] = round(vacancies_by_city['vacancy'] / vacancies.shape[0] * 100, 2)
-
-salary_by_city_filtered = vacancies_filtered.groupby('area_name')['salary'].mean()
+salary_by_city_filtered = vacancies_filtered[vacancies_filtered['area_name'].isin(cities_to_include)].groupby('area_name')['salary'].mean()
 vacancies_by_city_filtered = vacancies_filtered.groupby('area_name').size().to_frame('vacancy')
 vacancies_by_city_filtered['vacancy'] = round(vacancies_by_city_filtered['vacancy'] / vacancies_filtered.shape[0] * 100, 2)
+
 
 # Навыки
 skills_by_year = vacancies.explode('key_skills').groupby('year')['key_skills'].value_counts().groupby('year').nlargest(
     20)
 skills_by_year_filtered = vacancies_filtered.explode('key_skills').groupby('year')['key_skills'].value_counts().groupby(
     'year').nlargest(20)
+
+skills_by_year_filtered.to_csv('skills_by_year_filtered.csv')
+skills_by_year.to_csv('skills_by_year.csv')
 
 # Графики
 # Востребованность
@@ -68,7 +74,7 @@ ax.set_title('Уровень зарплаты по годам')
 ax.set_xticks(x, salary_by_year.index.tolist())
 ax.set_xticklabels(salary_by_year.index.tolist(), rotation='vertical', va='top')
 ax.legend(loc='upper right')
-plt.savefig('C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/salary_by_year.png')
+plt.savefig('DjangoApp/static/images/plots/salary_by_year.png')
 plt.show()
 
 fig, ax = plt.subplots(layout="constrained")
@@ -80,25 +86,31 @@ ax.set_xticks(x, vacancies_by_year.index.tolist())
 ax.set_xticklabels(vacancies_by_year.index.tolist(), rotation='vertical', va='top')
 ax.legend(loc='upper right')
 ax.set_yscale('log')
-plt.savefig('C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/vacancies_by_year.png')
+plt.savefig('DjangoApp/static/images/plots/vacancies_by_year.png')
 plt.show()
 
 # География
+
+plot1 = plt.subplot2grid((2, 2), (0, 0)) #круговая
+plot2 = plt.subplot2grid((2, 2), (0, 1)) #круговая игры
+plot3 = plt.subplot2grid((2, 2), (1, 0), colspan=2) #барх
+
 salary_by_city_sorted = salary_by_city.sort_values(ascending=False).head(10)
 salary_by_city_filtered_sorted = salary_by_city_filtered.sort_values(ascending=False).head(10)
 as_list = salary_by_city_sorted.index.tolist()
 as_list = [label.replace(' ', '\n') for label in as_list]
 x = np.arange(len(as_list))
-fig, ax = plt.subplots(layout="constrained")
-ax.set_title('Уровень зарплат по городам')
-ax.barh(x + width / 2, salary_by_city_sorted, width, label="Все вакансии")
-ax.barh(x - width / 2, salary_by_city_filtered_sorted, width, label="Вакансии разработчика игр")
-ax.set_yticklabels(as_list, fontsize=6, va='center', ha='right')
-ax.legend(loc='upper right')
-plt.savefig('C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/salary_by_city.png')
-plt.show()
+# fig, ax = plt.subplots(layout="constrained")
+plot3.set_title('Уровень зарплат по городам')
+plot3.barh(x + width / 2, salary_by_city_sorted, width, label="Все вакансии")
+plot3.barh(x - width / 2, salary_by_city_filtered_sorted, width, label="Вакансии разработчика игр")
+plot3.set_yticks(x, as_list)
+plot3.set_yticklabels(as_list, fontsize=6, va='center', ha='right')
+plot3.legend(loc='upper right')
+# plt.savefig('C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/salary_by_city.png')
+# plt.show()
 
-fig, ax = plt.subplots(layout="constrained")
+# fig, ax = plt.subplots(layout="constrained")
 top_10_city_ratio = vacancies_by_city.sort_values('vacancy', ascending=False).head(10)
 other = 100 - top_10_city_ratio['vacancy'].sum()
 new_dic = {'Другие': other}
@@ -106,13 +118,13 @@ new_dic.update(top_10_city_ratio['vacancy'].to_dict())
 area_count_dic = new_dic
 labels = list(area_count_dic.keys())
 sizes = list(area_count_dic.values())
-ax.pie(sizes, labels=labels, textprops={'fontsize': 6})
-ax.set_title('Доля вакансий по городам')
-ax.axis('scaled')
-plt.savefig('C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/vacancies_by_city.png')
-plt.show()
+plot1.pie(sizes, labels=labels, textprops={'fontsize': 6})
+plot1.set_title('Доля вакансий по городам')
+plot1.axis('scaled')
+# plt.savefig('C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/vacancies_by_city.png')
+# plt.show()
 
-fig, ax = plt.subplots(layout="constrained")
+# fig, ax = plt.subplots(layout="constrained")
 top_10_city_ratio_filtered = vacancies_by_city_filtered.sort_values('vacancy', ascending=False).head(10)
 other = 100 - top_10_city_ratio_filtered['vacancy'].sum()
 new_dic = {'Другие': other}
@@ -120,12 +132,25 @@ new_dic.update(top_10_city_ratio_filtered['vacancy'].to_dict())
 area_count_dic = new_dic
 labels = list(area_count_dic.keys())
 sizes = list(area_count_dic.values())
-ax.pie(sizes, labels=labels, textprops={'fontsize': 6})
-ax.set_title('Доля вакансий по городам для выбранной профессии')
-ax.axis('scaled')
+plot2.pie(sizes, labels=labels, textprops={'fontsize': 6})
+plot2.set_title('Доля вакансий по городам для выбранной профессии')
+plot2.axis('scaled')
+plt.subplots_adjust(hspace=0.5)
+plt.tight_layout()
 plt.savefig(
-    'C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/vacancies_by_city_filtered.png')
+    'DjangoApp/static/images/plots/vacancies_by_city_filtered.png')
 plt.show()
+
+salary_by_year.to_csv('salaries_by_year.csv')
+vacancies_by_year.to_csv('vacancies_by_year.csv')
+salary_by_year_filtered.to_csv('salary_by_year_filtered.csv')
+vacancies_by_year_filtered.to_csv('vacancies_by_year_filtered.csv')
+
+salary_by_city_filtered.to_csv('salaries_by_city_filtered.csv')
+salary_by_city.to_csv('salaries_by_city.csv')
+top_10_city_ratio_filtered.to_csv('vacancies_by_city_filtered.csv')
+top_10_city_ratio.to_csv('vacancies_by_city.csv')
+
 
 # Навыки
 years = skills_by_year.index.get_level_values(0).unique()
@@ -157,7 +182,7 @@ for year in years:
     ax.legend()
 
     plt.savefig(
-        f'C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/skills_by_year_{year}.png')
+        f'DjangoApp/static/images/plots/skills_by_year_{year}.png')
     plt.show()
 
 # Цикл через года для отфильтрованных профессий
@@ -184,5 +209,5 @@ for year in years:
     ax.legend()
 
     plt.savefig(
-        f'C:/Users/tihan/PycharmProjects/djangoProjectUlearn/DjangoApp/static/images/plots/skills_by_year_filtered_{year}.png')
+        f'DjangoApp/static/images/plots/skills_by_year_filtered_{year}.png')
     plt.show()
