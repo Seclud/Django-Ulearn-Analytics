@@ -266,3 +266,16 @@ skills_by_year_filtered_2023.png
 /DjangoApp/static/images/plots/vacancies_by_city_filtered.png
 /DjangoApp/static/images/i-gamedev.jpg
 /db.sqlite3
+/analytics/rates.csv
+/analytics/salaries_by_city.csv
+/analytics/salaries_by_city_filtered.csv
+/analytics/salaries_by_year.csv
+/analytics/salary_by_year_filtered.csv
+/analytics/skills_by_year.csv
+/analytics/skills_by_year_filtered.csv
+/analytics/vacancies_by_city.csv
+/analytics/vacancies_by_city_filtered.csv
+/analytics/vacancies_by_year.csv
+/analytics/vacancies_by_year_filtered.csv
+/media/skills/skills_by_year_2022_ddNFhYh.png
+/media/skills/skills_by_year_2022_zLMC0Dd.png
