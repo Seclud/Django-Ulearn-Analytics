@@ -1,19 +1,35 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import requests
+
 
 vacancies = pd.read_csv('vacancies.csv')
+vacancies['salary_from'] = vacancies['salary_from'].astype('float32')
+vacancies['salary_to'] = vacancies['salary_to'].astype('float32')
+rates= pd.read_csv('rates.csv')
+float64_cols=list(rates.select_dtypes(include=['float64']))
+rates[float64_cols]=rates[float64_cols].astype('float32')
+
+def calculate_salary(row, currency):
+    if pd.notna(row['salary']) and row['salary_currency'] != 'RUR':
+        date_match = currency[currency['date'] == row['date']].index[0]
+        currency_rate = currency.at[date_match, row['salary_currency']]
+        if currency_rate:
+            return row['salary'] * currency_rate
+    return row['salary']
 
 # добавление нужных полей
 vacancies['published_at'] = pd.to_datetime(vacancies['published_at'], utc=True)
 vacancies['year'] = vacancies['published_at'].dt.year
 vacancies['salary'] = vacancies[['salary_from', 'salary_to']].mean(axis=1)
 vacancies['key_skills'] = vacancies['key_skills'].str.split('\n')
+vacancies['date'] = vacancies['published_at'].dt.strftime('01/%m/%Y')
+vacancies['salary'] = vacancies.apply(calculate_salary, axis=1, args=(rates,))
 
 # фильтрация выбранной
 keywords = ['game', 'unity', 'игр', 'unreal', 'GameDev']
 vacancies_filtered = vacancies[vacancies['name'].str.contains('|'.join(r'\b{}\b'.format(word) for word in keywords))]
+
 
 # Востребованность
 salary_by_year = vacancies.groupby('year')['salary'].mean()
