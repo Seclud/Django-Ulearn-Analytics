@@ -1,4 +1,21 @@
-{% extends "base.html" %} {% block title %} География {%  endblock %}
+{% extends "base.html" %} {% block title %} География {% endblock %}
 {% load static %}
 {% block content %}
+    <h1>География</h1>
+    {% for plot in plots %}
+        {% if plot.image %}
+            <img src="{{ plot.image.url }}" alt="plot">
+        {% else %}
+            <img src="{% static 'images/plots/vacancies_by_city_filtered.png' %}" alt="plot">
+        {% endif %}
+    {% endfor %}
+    <img src="{% static 'images/plots/vacancies_by_city_filtered.png' %}" alt="plot">
+    <h2>{{ title }}</h2>
+    {{ table|safe }}
+    <h2>{{ title2 }}</h2>
+    {{ table2|safe }}
+    <h2>{{ title3 }}</h2>
+    {{ table3|safe }}
+    <h2>{{ title4 }}</h2>
+    {{ table4|safe }}
 {% endblock %}

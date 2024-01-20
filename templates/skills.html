@@ -1,6 +1,18 @@
-{% extends "base.html" %} {% block title %} Навыки {%  endblock %}
+{% extends "base.html" %}
+{% block title %} Навыки {% endblock %}
 {% load static %}
 {% block content %}
-<h1>Навыки</h1>
-<img src="{% static 'images/plots/skills_by_year_2020.png' %}" alt="Skills by Year 2020">
+    <h1>Навыки</h1>
+    {% for skill in skills %}
+        {% if skill.image %}
+            <img src="{{ skill.image.url }}" alt="skill">
+        {% else %}
+            <img src="{% static 'images/plots/skills_by_year_2021.png' %}" alt="skill">
+        {% endif %}
+    {% endfor %}
+    <img src="{% static 'images/plots/skills_by_year_2021.png' %}" alt="skill">
+    <h2>{{ title }}</h2>
+    {{ table|safe }}
+    <h2>{{ title2 }}</h2>
+    {{ table2|safe }}
 {% endblock %}
