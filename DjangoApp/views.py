@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse
-from .models import Skill, Geography, Demand
+from .models import Image
 import requests
 from datetime import datetime, timedelta
 import pandas as pd
@@ -15,10 +15,10 @@ def home(request):
 #     return render(request, 'todos.html', {'todos':items})
 
 def demand(request):
-    plots = Demand.objects.all()
-    df = pd.read_csv("analytics/salary_by_year_filtered.csv")
+    plots = Image.objects.filter(category=Image.Category.DEMAND)
+    df = pd.read_csv("analytics/salaries_by_year_filtered.csv")
     table = df.to_html(classes='table', index=False, justify='left')
-    title = "Статистика по годам для выбранной профессии"
+    title = "Статистика по годам для разработчика игр"
     df2 = pd.read_csv("analytics/salaries_by_year.csv")
     table2 = df2.to_html(classes='table', index=False, justify='left')
     title2 = "Статистика по годам"
@@ -27,10 +27,10 @@ def demand(request):
 
 
 def geography(request):
-    plots = Geography.objects.all()
+    plots = Image.objects.filter(category=Image.Category.GEOGRAPHY)
     df = pd.read_csv("analytics/vacancies_by_city_filtered.csv")
     table = df.to_html(classes='table', index=False, justify='left')
-    title = "Доля вакансий по городам для выбранной профессии"
+    title = "Доля вакансий по городам для разработчика игр"
     df2 = pd.read_csv("analytics/vacancies_by_city.csv")
     table2 = df2.to_html(classes='table', index=False, justify='left')
     title2 = "Доля вакансий по городам"
@@ -39,20 +39,20 @@ def geography(request):
     title3 = "Зарплаты по городам"
     df4 = pd.read_csv("analytics/salaries_by_city_filtered.csv")
     table4 = df4.to_html(classes='table', index=False, justify='left')
-    title4 = "Зарплаты по городам для выбранной профессии"
+    title4 = "Зарплаты по городам для разработчика игр"
     return render(request, 'geography.html',
                   {'plots': plots, 'table': table, 'table2': table2, 'table3': table3, 'table4': table4, 'title': title,
                    'title2': title2, 'title3': title3, 'title4': title4})
 
 
 def skills(request):
-    skills = Skill.objects.all()
+    skills = Image.objects.filter(category=Image.Category.SKILL)
     df = pd.read_csv("analytics/skills_by_year.csv")
     table = df.to_html(classes='table', index=False, justify='left')
-    title = "Навыки по годам"
+    title = "20 самых популярных навыков по годам"
     df2 = pd.read_csv("analytics/skills_by_year_filtered.csv")
     table2 = df2.to_html(classes='table', index=False, justify='left')
-    title2 = "Навыки по годам для выбранной профессии"
+    title2 = "20 самых популярных навыков по годам для разработчика игр"
     return render(request, 'skills.html', {'skills': skills, 'table': table, 'table2': table2, 'title': title,
                                            'title2': title2})
 
