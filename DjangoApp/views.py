@@ -1,8 +1,9 @@
 from django.shortcuts import render, HttpResponse
-from .models import Image
+from .models import Image, DataTable
 import requests
 from datetime import datetime, timedelta
 import pandas as pd
+import io
 
 
 # Create your views here.
@@ -10,51 +11,68 @@ def home(request):
     return render(request, 'home.html')
 
 
-# def todos(request):
-#     items = TodoItem.objects.all()
-#     return render(request, 'todos.html', {'todos':items})
-
 def demand(request):
     plots = Image.objects.filter(category=Image.Category.DEMAND)
-    df = pd.read_csv("analytics/salaries_by_year_filtered.csv")
-    table = df.to_html(classes='table', index=False, justify='left')
-    title = "Статистика по годам для разработчика игр"
-    df2 = pd.read_csv("analytics/salaries_by_year.csv")
-    table2 = df2.to_html(classes='table', index=False, justify='left')
-    title2 = "Статистика по годам"
-    return render(request, 'demand.html', {'plots': plots, 'table': table, 'table2': table2, 'title': title,
-                                           'title2': title2})
+    tables = DataTable.objects.filter(category=DataTable.Category.DEMAND)
+    if not tables:
+        manual_tables = [
+            {"title": "Статистика по годам для разработчика игр",
+             "csv_file": "analytics/salaries_by_year_filtered.csv"},
+            {"title": "Статистика по годам", "csv_file": "analytics/salaries_by_year.csv"},
+        ]
+        tables_html = [pd.read_csv(table["csv_file"]).to_html(classes='table', index=False, justify='left') for table in
+                       manual_tables]
+        titles = [table["title"] for table in manual_tables]
+    else:
+        tables_html = [
+            pd.read_csv(io.StringIO(table.csv_file.read().decode('utf-8'))).to_html(classes='table', index=False,
+                                                                                    justify='left') for table in tables]
+        titles = [table.title for table in tables]
+    return render(request, 'demand.html', {'plots': plots, 'tables': zip(titles, tables_html)})
 
 
 def geography(request):
     plots = Image.objects.filter(category=Image.Category.GEOGRAPHY)
-    df = pd.read_csv("analytics/vacancies_by_city_filtered.csv")
-    table = df.to_html(classes='table', index=False, justify='left')
-    title = "Доля вакансий по городам для разработчика игр"
-    df2 = pd.read_csv("analytics/vacancies_by_city.csv")
-    table2 = df2.to_html(classes='table', index=False, justify='left')
-    title2 = "Доля вакансий по городам"
-    df3 = pd.read_csv("analytics/salaries_by_city.csv")
-    table3 = df3.to_html(classes='table', index=False, justify='left')
-    title3 = "Зарплаты по городам"
-    df4 = pd.read_csv("analytics/salaries_by_city_filtered.csv")
-    table4 = df4.to_html(classes='table', index=False, justify='left')
-    title4 = "Зарплаты по городам для разработчика игр"
-    return render(request, 'geography.html',
-                  {'plots': plots, 'table': table, 'table2': table2, 'table3': table3, 'table4': table4, 'title': title,
-                   'title2': title2, 'title3': title3, 'title4': title4})
+    tables = DataTable.objects.filter(category=DataTable.Category.GEOGRAPHY)
+    if not tables:
+        manual_tables = [
+            {"title": "Доля вакансий по городам для разработчика игр",
+             "csv_file": "analytics/vacancies_by_city_filtered.csv"},
+            {"title": "Доля вакансий по городам", "csv_file": "analytics/vacancies_by_city.csv"},
+            {"title": "Зарплаты по городам", "csv_file": "analytics/salaries_by_city.csv"},
+            {"title": "Зарплаты по городам для разработчика игр",
+             "csv_file": "analytics/salaries_by_city_filtered.csv"},
+        ]
+        tables_html = [pd.read_csv(table["csv_file"]).to_html(classes='table', index=False, justify='left') for table in
+                       manual_tables]
+        titles = [table["title"] for table in manual_tables]
+    else:
+        tables_html = [
+            pd.read_csv(io.StringIO(table.csv_file.read().decode('utf-8'))).to_html(classes='table', index=False,
+                                                                                    justify='left') for table in tables]
+        titles = [table.title for table in tables]
+    return render(request, 'geography.html', {'plots': plots, 'tables': zip(titles, tables_html)})
 
 
 def skills(request):
     skills = Image.objects.filter(category=Image.Category.SKILL)
-    df = pd.read_csv("analytics/skills_by_year.csv")
-    table = df.to_html(classes='table', index=False, justify='left')
-    title = "20 самых популярных навыков по годам"
-    df2 = pd.read_csv("analytics/skills_by_year_filtered.csv")
-    table2 = df2.to_html(classes='table', index=False, justify='left')
-    title2 = "20 самых популярных навыков по годам для разработчика игр"
-    return render(request, 'skills.html', {'skills': skills, 'table': table, 'table2': table2, 'title': title,
-                                           'title2': title2})
+    tables = DataTable.objects.filter(category=DataTable.Category.SKILL)
+    if not tables:
+        manual_tables = [
+            {"title": "20 самых популярных навыков по годам",
+             "csv_file": "analytics/skills_by_year.csv"},
+            {"title": "20 самых популярных навыков по годам для разработчика игр",
+             "csv_file": "analytics/skills_by_year_filtered.csv"},
+        ]
+        tables_html = [pd.read_csv(table["csv_file"]).to_html(classes='table', index=False, justify='left') for table in
+                       manual_tables]
+        titles = [table["title"] for table in manual_tables]
+    else:
+        tables_html = [
+            pd.read_csv(io.StringIO(table.csv_file.read().decode('utf-8'))).to_html(classes='table', index=False,
+                                                                                    justify='left') for table in tables]
+        titles = [table.title for table in tables]
+    return render(request, 'skills.html', {'skills': skills, 'tables': zip(titles, tables_html)})
 
 
 def last_vacancies(request):
