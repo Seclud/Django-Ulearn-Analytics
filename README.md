@@ -1,6 +1,7 @@
 # Проект по аналитике данных вакансий
 Это проект по аналитике данных профессий. Он выложен на PythonAnywhere и доступен [тут](http://seclud.pythonanywhere.com/)
-![image](https://github.com/Seclud/Django-Ulearn-Analytics/assets/82933148/a821cb3a-e99c-46bd-aa45-89bddf655048)
+![image](https://github.com/Seclud/Django-Ulearn-Analytics/assets/82933148/693b3a7a-8bf0-4e06-ac92-ff017b4415fa)
+
 
 
 
