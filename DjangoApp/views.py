@@ -89,6 +89,15 @@ def last_vacancies(request):
         'order_by': 'publication_time'
     })
 
+
     vacancies = response.json()['items']
+
+    for vacancy in vacancies:
+        vacancy_id = vacancy['id']
+        vacancy_response = requests.get(f'https://api.hh.ru/vacancies/{vacancy_id}')
+        key_skills = vacancy_response.json().get('key_skills', [])
+        vacancy['key_skills'] = ', '.join([skill['name'] for skill in key_skills])
+        description = vacancy_response.json().get('description')
+        vacancy['description'] = description
 
     return render(request, 'LastVacancies.html', {'vacancies': vacancies})

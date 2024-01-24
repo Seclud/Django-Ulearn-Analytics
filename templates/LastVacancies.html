@@ -6,12 +6,12 @@
     {% for vacancy in vacancies %}
         <li>
             <h2>{{ vacancy.name }}</h2>
-            <p>{{ vacancy.description }}</p>
-            <p>Навыки: {{ vacancy.snippet.requirement }}</p>
-            <p>Компания: {{ vacancy.employer.name }}</p>
-            <p>Оклад: {{ vacancy.salary.from }} - {{ vacancy.salary.to }}</p>
-            <p>Регион: {{ vacancy.area.name }}</p>
-            <p>Дата публикации: {{ vacancy.published_at }}</p>
+            <p><strong>Описание:</strong> {{ vacancy.description |safe }}</p>
+            <p><strong>Навыки:</strong> {{ vacancy.key_skills }}</p>
+            <p><strong>Компания:</strong> {{ vacancy.employer.name }}</p>
+            <p><strong>Оклад:</strong> {{ vacancy.salary.from }} - {{ vacancy.salary.to }}</p>
+            <p><strong>Регион:</strong> {{ vacancy.area.name }}</p>
+            <p><strong>Дата публикации:</strong> {{ vacancy.published_at }}</p>
         </li>
     {% endfor %}
     </ul>
