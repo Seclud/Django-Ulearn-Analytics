@@ -4,102 +4,52 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}"/>
     <title>
         {% block title %}
             Django App
         {% endblock %}
     </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/base.css' %}"/>
 </head>
 <body>
-{% comment %} <div class ="main">
-       <div class="d-flex flex-column text-white bg-dark" style="width: 280px;">
-                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                    <span>DjangoApp</span>
-                </a>
-              <ul class ="nav  nav-pills flex-column mb-auto">
-                <li class="nav-item active">
-                  <a class="nav-link" href="{%url 'home'%}">Главная</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link link-light" href="{%url 'Todos'%}">todos</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link link-light" href="{%url 'demand'%}">Востребованность</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link link-light" href="{%url 'geography'%}">География</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link link-light" href="{%url 'skills'%}">Навыки</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link link-light" href="{%url 'last_vacancies'%}">Последние вакансии</a>
-                </li>
-              </ul>
-            </div> {% endcomment %}
-{#    <nav class="navbar navbar-expand-md navbar-light bg-light fixed-left">#}
-{#      <a class="navbar-brand" href="#">My Django App</a>#}
-{#      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>#}
-{#      <div class="collapse navbar-collapse" id="navbarNav">#}
-{#        <ul class="navbar-nav ms-auto">#}
-{#          <li class="nav-item active">#}
-{#            <a class="nav-link" href="{%url 'home'%}">Главная</a>#}
-{#          </li>#}
-{#          <li class="nav-item">#}
-{#            <a class="nav-link" href="{%url 'Todos'%}">todos</a>#}
-{#          </li>#}
-{#          <li class="nav-item">#}
-{#            <a class="nav-link" href="{%url 'demand'%}">Востребованность</a>#}
-{#          </li>#}
-{#          <li class="nav-item">#}
-{#            <a class="nav-link" href="{%url 'geography'%}">География</a>#}
-{#          </li>#}
-{#          <li class="nav-item">#}
-{#            <a class="nav-link" href="{%url 'skills'%}">Навыки</a>#}
-{#          </li>#}
-{#          <li class="nav-item">#}
-{#            <a class="nav-link" href="{%url 'last_vacancies'%}">Последние вакансии</a>#}
-{#          </li>#}
-{#        </ul>#}
-{#      </div>#}
-{#    </nav>#}
 <div class="container-fluid overflow-hidden">
     <div class="row vh-100 overflow-auto">
-        <header class="d-flex flex-wrap justify-content-center py-3 mb-0 border-bottom">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-0 border-bottom bg-dark">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
                 <img src="{% static 'images/logo.png' %}" class="bi me-2" width="60" height="60">
-                <span class="fs-4">Аналитика профессий</span>
+                <span class="fs-4 text-light">Аналитика профессий</span>
             </a>
         </header>
         <div class="col-12 col-sm-3 col-xl-2 px-sm-2 px-0 bg-dark d-flex sticky-top sidebar">
             <div class="d-flex flex-sm-column flex-row flex-grow-1 align-items-center align-items-sm-start px-3 pt-2 text-white">
                 <ul class="nav nav-pills flex-sm-column flex-row flex-nowrap flex-shrink-1 flex-sm-grow-0 flex-grow-1 mb-sm-auto mb-0 justify-content-center align-items-center align-items-sm-start"
                     id="menu">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{% url 'home' %}">Главная</a>
-                    </li>
-{#                    <li class="nav-item">#}
-{#                        <a class="nav-link link-light" href="{% url 'Todos' %}">todos</a>#}
-{#                    </li>#}
                     <li class="nav-item">
-                        <a class="nav-link link-light" href="{% url 'demand' %}">Востребованность</a>
+                        <a class="nav-link link-light {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+                           href="{% url 'home' %}">Главная</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link link-light" href="{% url 'geography' %}">География</a>
+                        <a class="nav-link link-light {% if request.resolver_match.url_name == 'demand' %}active{% endif %}"
+                           href="{% url 'demand' %}">Востребованность</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link link-light" href="{% url 'skills' %}">Навыки</a>
+                        <a class="nav-link link-light {% if request.resolver_match.url_name == 'geography' %}active{% endif %}"
+                           href="{% url 'geography' %}">География</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link link-light" href="{% url 'last_vacancies' %}">Последние вакансии</a>
+                        <a class="nav-link link-light {% if request.resolver_match.url_name == 'skills' %}active{% endif %}"
+                           href="{% url 'skills' %}">Навыки</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link link-light {% if request.resolver_match.url_name == 'last_vacancies' %}active{% endif %}"
+                           href="{% url 'last_vacancies' %}">Последние вакансии</a>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="col d-flex flex-column h-sm-100 main-content">
+        <div class="col d-flex flex-column main-content">
             <div class="col pt-4">
                 <main class="row overflow-auto"> {% block content %} {% endblock %}</main>
             </div>
@@ -108,10 +58,12 @@
                     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
                     crossorigin="anonymous"></script>
         </div>
-        <footer class="row bg-light py-4 mt-auto">
-            Тихонов Егор Станиславович РИ-220947
+        <footer class="row bg-dark py-4 mt-auto border-top" style="padding-left: 20px">
+            <p class="text-light">Тихонов Егор Станиславович РИ-220947</p>
         </footer>
     </div>
 </div>
 </body>
+<script>
+</script>
 </html>

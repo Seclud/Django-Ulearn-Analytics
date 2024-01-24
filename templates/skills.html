@@ -2,17 +2,21 @@
 {% block title %} Навыки {% endblock %}
 {% load static %}
 {% block content %}
-    <h1>Навыки</h1>
-    {% for skill in skills %}
-        {% if skill.image %}
-            <img src="{{ skill.image.url }}" alt="skill">
-        {% else %}
-            <img src="{% static 'images/plots/skills_by_year_2021.png' %}" alt="skill">
-        {% endif %}
-    {% endfor %}
-    <img src="{% static 'images/plots/skills_by_year_2021.png' %}" alt="skill">
-    <h2>{{ title }}</h2>
-    {{ table|safe }}
-    <h2>{{ title2 }}</h2>
-    {{ table2|safe }}
+    <div class="container">
+        <h1 class="text-center my-4">Навыки</h1>
+        {% for skill in skills %}
+            <div style="width: fit-content;" class="text-center">
+                <img src="{{ skill.image.url }}" alt="skill">
+            </div>
+        {% empty %}
+            <div style="width: fit-content;" class="text-center">
+                <img src="{% static 'images/plots/skills_by_year_2023.png' %}" alt="skill" width="800px">
+                <img src="{% static 'images/plots/skills_by_year_filtered_2023.png' %}" alt="skill" width="800px">
+            </div>
+        {% endfor %}
+        {% for title, table in tables %}
+            <h2>{{ title }}</h2>
+            {{ table|safe }}
+        {% endfor %}
+    </div>
 {% endblock %}

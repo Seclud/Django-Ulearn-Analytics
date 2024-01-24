@@ -1,11 +1,20 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 {% block title %} Востребованность {% endblock %}
 {% load static %}
 {% block content %}
-    <img src="{% static 'images/plots/salary_by_year.png' %}" alt="plot">
-    <img src="{% static 'images/plots/vacancies_by_year.png' %}" alt="plot">
-    <h2>{{ title }}</h2>
-    {{ table|safe }}
-    <h2>{{ title2 }}</h2>
-    {{ table2|safe }}
+    <h1 class="text-center my-4">Востребованность</h1>
+    {% for plot in plots %}
+        <div style="width: fit-content;" class="text-center">
+            <img src="{{ plot.image.url }}" alt="plot">
+        </div>
+    {% empty %}
+        <div style="width: fit-content;" class="text-center">
+            <img src="{% static 'images/plots/salary_by_year.png' %}" alt="plot">
+            <img src="{% static 'images/plots/vacancies_by_year.png' %}" alt="plot">
+        </div>
+    {% endfor %}
+    {% for title, table in tables %}
+        <h2>{{ title }}</h2>
+        {{ table|safe }}
+    {% endfor %}
 {% endblock %}
