@@ -9,7 +9,11 @@ vacancies_by_year = pd.read_csv('vacancies_by_year.csv').set_index('Год')
 vacancies_by_year_filtered = pd.read_csv('vacancies_by_year_filtered.csv').set_index('Год')
 
 salaries_by_city = pd.read_csv('salaries_by_city.csv').set_index('Город')
+salaries_by_city.sort_values(by='Зарплата', ascending=False, inplace=True)
+salaries_by_city.to_csv('salaries_by_city.csv')
 salaries_by_city_filtered = pd.read_csv('salaries_by_city_filtered.csv').set_index('Город')
+salaries_by_city_filtered.sort_values(by='Зарплата', ascending=False, inplace=True)
+salaries_by_city_filtered.to_csv('salaries_by_city_filtered.csv')
 
 vacancies_by_city = pd.read_csv('vacancies_by_city.csv').set_index('Город')
 vacancies_by_city_filtered = pd.read_csv('vacancies_by_city_filtered.csv').set_index('Город')
@@ -40,8 +44,8 @@ plt.show()
 fig, ax = plt.subplots(layout="constrained")
 ax.bar(x + width / 2, vacancies_by_year['Вакансии'], width=width, label="Кол-во вакансий")
 ax.bar(x - width / 2, vacancies_by_year_filtered['Вакансии'], width=width, label="Кол-во вакансий разработчика игр")
-ax.set_ylabel('Кол-во вакансий')
-ax.set_title('Кол-во вакансий по годам')
+ax.set_ylabel('Разница в кол-ве вакансий')
+ax.set_title('Разница в кол-ве вакансий по годам')
 ax.set_xticks(x, vacancies_by_year.index.tolist())
 ax.set_xticklabels(vacancies_by_year.index.tolist(), rotation='vertical', va='top')
 ax.legend(loc='upper right')
@@ -54,8 +58,8 @@ plot1 = plt.subplot2grid((2, 2), (0, 0))  # круговая
 plot2 = plt.subplot2grid((2, 2), (0, 1))  # круговая игры
 plot3 = plt.subplot2grid((2, 2), (1, 0), colspan=2)  # барх
 
-salary_by_city_sorted = salaries_by_city.sort_values(by=['Зарплата'], ascending=False).head(10)
-salary_by_city_filtered_sorted = salaries_by_city_filtered.sort_values(by=['Зарплата'], ascending=False).head(10)
+salary_by_city_sorted = salaries_by_city.head(10)
+salary_by_city_filtered_sorted = salaries_by_city_filtered.reindex(salary_by_city_sorted.index).head(10)
 as_list = salary_by_city_sorted.index.tolist()
 as_list = [label.replace(' ', '\n') for label in as_list]
 x = np.arange(len(as_list))
@@ -71,9 +75,9 @@ plot3.legend(loc='upper right', prop={'size': 6})
 
 # fig, ax = plt.subplots(layout="constrained")
 top_10_city_ratio = vacancies_by_city
-other = 100 - top_10_city_ratio['Вакансии'].sum()
+other = 100 - top_10_city_ratio['Доля Вакансий'].sum()
 new_dic = {'Другие': other}
-new_dic.update(top_10_city_ratio['Вакансии'].to_dict())
+new_dic.update(top_10_city_ratio['Доля Вакансий'].to_dict())
 area_count_dic = new_dic
 labels = list(area_count_dic.keys())
 sizes = list(area_count_dic.values())
@@ -85,9 +89,9 @@ plot1.axis('scaled')
 
 # fig, ax = plt.subplots(layout="constrained")
 top_10_city_ratio_filtered = vacancies_by_city_filtered
-other = 100 - top_10_city_ratio_filtered['Вакансии'].sum()
+other = 100 - top_10_city_ratio_filtered['Доля Вакансий'].sum()
 new_dic = {'Другие': other}
-new_dic.update(top_10_city_ratio_filtered['Вакансии'].to_dict())
+new_dic.update(top_10_city_ratio_filtered['Доля Вакансий'].to_dict())
 area_count_dic = new_dic
 labels = list(area_count_dic.keys())
 sizes = list(area_count_dic.values())
