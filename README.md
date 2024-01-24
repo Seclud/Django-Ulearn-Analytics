@@ -1,6 +1,7 @@
 # Проект по аналитике данных вакансий
 Это проект по аналитике данных профессий. Он выложен на PythonAnywhere и доступен [тут](http://seclud.pythonanywhere.com/)
-![image](https://github.com/Seclud/Django-Ulearn-Analytics/assets/82933148/71b933e5-8f32-4244-ae7e-553d98f1e167)
+![image](https://github.com/Seclud/Django-Ulearn-Analytics/assets/82933148/a821cb3a-e99c-46bd-aa45-89bddf655048)
+
 
 
 ## Структура проекта
@@ -15,6 +16,7 @@
 
 Каталог `analytics/` содержит скрипты Python для анализа данных:
 
-- `basic.py`: Содержит всю обработку большого файла vacancies (TODO: разнести логику в разные скрипты)
+- `basic.py`: Содержит обработку большого файла vacancies
+- `create_graphs`: На основе обработанного датасета создает графики
 - `get_rates.py`: Парсит курсы валют с сайта ЦБР
 - `parser test.py`: Тестовый парсер для api hh.ru, полноценно внедрен в last_vacancies
